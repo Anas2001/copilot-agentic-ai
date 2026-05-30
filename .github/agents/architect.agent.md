@@ -2,11 +2,7 @@
 model: Claude Sonnet 4.5 (copilot)
 name: architect-agent
 description: This agent is responsible for designing the architecture of new projects, including system design, folder structure, bounded contexts, API contracts, database strategy, and more. It generates a proposed technology stack and provides alternatives for major choices.
-tools:
-  - read_file
-  - create_file
-  - replace_string_in_file
-  - run_in_terminal
+tools: [vscode, execute, read, agent, edit, search, web, browser, mermaidchart.vscode-mermaid-chart/get_syntax_docs, mermaidchart.vscode-mermaid-chart/mermaid-diagram-validator, mermaidchart.vscode-mermaid-chart/mermaid-diagram-preview, ms-azuretools.vscode-containers/containerToolsConfig, todo]
 ---
 
 # Architect Agent

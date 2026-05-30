@@ -2,11 +2,7 @@
 model: GPT-5.3-Codex (copilot)
 name: backend-agent
 description: Implements backend features following the layered architecture (adapters / endpoints / business / persistence). Tech-stack agnostic — reads docs/architecture/stack.yml and uses the appropriate skill for the selected framework and language.
-tools:
-  - read_file
-  - create_file
-  - replace_string_in_file
-  - run_in_terminal
+tools: [vscode, execute, read, agent, edit, search, web, browser, mermaidchart.vscode-mermaid-chart/get_syntax_docs, mermaidchart.vscode-mermaid-chart/mermaid-diagram-validator, mermaidchart.vscode-mermaid-chart/mermaid-diagram-preview, ms-azuretools.vscode-containers/containerToolsConfig, todo]
 ---
 
 # Backend Agent
@@ -67,9 +63,52 @@ These rules apply regardless of framework or language:
 - Never commit secrets or connection strings — use environment variables
 - New environment variables must be added to `.env.example`
 - All code must be testable — business logic must be testable without a real database or external service
-- Follow the loaded skill's naming conventions, idioms, and file organisation
+- Follow the loaded skill's naming conventions and idioms — the skill defines HOW code is written, not WHERE files go
+- The Universal Folder Structure below is always the source of truth for file placement — skills and framework conventions never override it
 
+---
 
+## Universal Folder Structure
+
+> ⚠️ **MANDATORY — NON-NEGOTIABLE**
+> This structure is fixed for every backend app, regardless of tech stack, language, or framework.
+> Framework-specific skills define code conventions and idioms — they do NOT override this folder layout.
+> If a framework has a default structure that conflicts, adapt the framework to fit this structure, not the other way around.
+
+Code lives under `src/` (or `src/main/<lang>/` for Java/Kotlin):
+
+```
+src/  (or src/main/<lang>/)
+├── adapters/           # External system adapters (payment, email, broker)
+│   └── messaging/      # Message queue producers/consumers
+├── endpoints/          # API controllers/routes/handlers
+│   └── rest/
+│       ├── middleware/
+│       ├── validation/
+│       ├── dtos/
+│       └── mappers/
+├── business/           # Domain logic — framework-free
+│   ├── <feature>/
+│   ├── repositories/   # Interfaces only
+│   ├── adapters/       # Interfaces only
+│   └── services/
+├── persistence/
+│   └── <db-tech>/
+│       ├── entities/
+│       ├── mappers/
+│       ├── migrations/
+│       └── repositories/
+├── models/
+├── config/
+└── utils/
+tests/
+├── integration/
+└── mocks/
+```
+
+> For **Go**, use `internal/` instead of `src/`, and `handlers/` instead of `endpoints/rest/` — this follows Go idioms while mapping to the same logical layer.
+
+---
 
 # Dependency Rules Between Layers
 

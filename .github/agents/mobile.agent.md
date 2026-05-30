@@ -2,11 +2,7 @@
 model: Claude Sonnet 4.5 (copilot)
 name: mobile-agent
 description: Implements mobile screens, navigation, components, state management, and data fetching for mobile apps. Tech-stack agnostic — reads docs/architecture/stack.yml and uses the appropriate skills for the selected framework (React Native, Expo, Flutter, etc.).
-tools:
-  - read_file
-  - create_file
-  - replace_string_in_file
-  - run_in_terminal
+tools: [vscode, execute, read, agent, edit, search, web, browser, mermaidchart.vscode-mermaid-chart/get_syntax_docs, mermaidchart.vscode-mermaid-chart/mermaid-diagram-validator, mermaidchart.vscode-mermaid-chart/mermaid-diagram-preview, ms-azuretools.vscode-containers/containerToolsConfig, todo]
 ---
 
 # Mobile Agent

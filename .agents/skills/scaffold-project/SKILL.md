@@ -352,17 +352,18 @@ Do not share code directly across language boundaries. Define API contracts (Ope
 
 ## Step 4 — Backend App (`apps/api`)
 
-Apply the block matching `backend.framework` in `stack.yml`. The **layered folder structure** (adapters / endpoints / business / persistence) is universal across all frameworks — only the file formats and build tools differ.
+> ⚠️ **MANDATORY STRUCTURE — NON-NEGOTIABLE**
+> This folder layout is fixed for ALL backend apps, regardless of framework, language, or tech stack.
+> Framework-specific sections below only add **build config files and scripts** — they do NOT change or replace this structure.
+> Never deviate from this layout. If a framework convention conflicts, follow this structure and adapt the framework to fit.
 
 ### Universal backend folder structure
-
-Regardless of framework, all backend apps follow this logical layout:
 
 ```
 apps/api/
 ├── <build-config>          # package.json | pom.xml | build.gradle | pyproject.toml
 ├── .env.example
-├── src/  (or src/main/<lang>/)
+├── src/  (or src/main/<lang>/ for Java/Kotlin)
 │   ├── adapters/           # External system adapters (payment, email, broker)
 │   │   └── messaging/      # Message queue producers/consumers
 │   ├── endpoints/          # API controllers/routes/handlers
@@ -390,13 +391,21 @@ apps/api/
     └── mocks/
 ```
 
+> Exception — **Go** only: use `internal/` instead of `src/`, and `handlers/` instead of `endpoints/rest/` — Go language idiom. All other subdirectory names remain identical.
+
 > The `backend-agent` enforces the dependency rules between these layers. Refer to `backend-agent` instructions for the complete rule set.
+
+---
+
+### Framework-specific additions
+
+> The sections below describe ONLY the **build config files and package scripts** to add on top of the universal structure above. They do not define a folder structure.
 
 ---
 
 ### If `backend.framework: nestjs` (TypeScript)
 
-Add NestJS-specific files:
+Add to the universal structure:
 ```
 apps/api/
 ├── package.json
@@ -426,7 +435,7 @@ apps/api/
 
 ### If `backend.framework: express` or `fastify` (TypeScript / JavaScript)
 
-Add:
+Add to the universal structure:
 ```
 apps/api/
 ├── package.json
@@ -447,9 +456,22 @@ apps/api/
     ├── main/
     │   ├── java/com/example/
     │   │   ├── adapters/
+    │   │   │   └── messaging/      # Message queue producers/consumers
     │   │   ├── endpoints/rest/     # JAX-RS resources
+    │   │   │   ├── middleware/
+    │   │   │   ├── validation/
+    │   │   │   ├── dtos/
+    │   │   │   └── mappers/
     │   │   ├── business/
-    │   │   ├── persistence/        # Panache repositories
+    │   │   │   ├── repositories/   # Interfaces only
+    │   │   │   ├── adapters/       # Interfaces only
+    │   │   │   └── services/
+    │   │   ├── persistence/
+    │   │   │   └── <db-tech>/
+    │   │   │       ├── entities/
+    │   │   │       ├── mappers/
+    │   │   │       ├── migrations/
+    │   │   │       └── repositories/
     │   │   ├── models/
     │   │   └── config/
     │   └── resources/
@@ -457,6 +479,8 @@ apps/api/
     │       └── META-INF/resources/
     └── test/
         └── java/com/example/
+            ├── integration/
+            └── mocks/
 ```
 
 `pom.xml` scripts (run via `mvn`):
@@ -477,14 +501,30 @@ apps/api/
     ├── main/
     │   ├── java/com/example/
     │   │   ├── adapters/
+    │   │   │   └── messaging/      # Message queue producers/consumers
     │   │   ├── endpoints/rest/     # @RestController
+    │   │   │   ├── middleware/
+    │   │   │   ├── validation/
+    │   │   │   ├── dtos/
+    │   │   │   └── mappers/
     │   │   ├── business/
-    │   │   ├── persistence/        # Spring Data repositories
+    │   │   │   ├── repositories/   # Interfaces only
+    │   │   │   ├── adapters/       # Interfaces only
+    │   │   │   └── services/
+    │   │   ├── persistence/
+    │   │   │   └── <db-tech>/
+    │   │   │       ├── entities/
+    │   │   │       ├── mappers/
+    │   │   │       ├── migrations/
+    │   │   │       └── repositories/
     │   │   ├── models/
     │   │   └── config/
     │   └── resources/
     │       └── application.yml
     └── test/
+        └── java/com/example/
+            ├── integration/
+            └── mocks/
 ```
 
 ---
@@ -497,29 +537,64 @@ apps/api/
 ├── requirements.txt        # or managed by poetry/uv
 └── src/
     ├── adapters/
-    ├── endpoints/          # routers / views
+    │   └── messaging/      # Message queue producers/consumers
+    ├── endpoints/
+    │   └── rest/           # routers / views
+    │       ├── middleware/
+    │       ├── validation/
+    │       ├── dtos/
+    │       └── mappers/
     ├── business/
+    │   ├── repositories/   # Interfaces only
+    │   ├── adapters/       # Interfaces only
+    │   └── services/
     ├── persistence/
+    │   └── <db-tech>/
+    │       ├── entities/
+    │       ├── mappers/
+    │       ├── migrations/
+    │       └── repositories/
     ├── models/
     ├── config/
     └── main.py             # app bootstrap
+tests/
+├── integration/
+└── mocks/
 ```
 
 ---
 
 ### If `backend.framework: gin`, `echo`, or `fiber` (Go)
 
+> Go idiom: uses `internal/` instead of `src/`, and `handlers/` instead of `endpoints/rest/` — maps to the same logical layer.
+
 ```
 apps/api/
 ├── go.mod
 ├── go.sum
-└── internal/
-    ├── adapters/
-    ├── handlers/           # HTTP handlers (equivalent to endpoints)
-    ├── business/
-    ├── persistence/
-    ├── models/
-    └── config/
+├── internal/
+│   ├── adapters/
+│   │   └── messaging/      # Message queue producers/consumers
+│   ├── handlers/           # HTTP handlers (equivalent to endpoints/rest/)
+│   │   ├── middleware/
+│   │   ├── validation/
+│   │   ├── dtos/
+│   │   └── mappers/
+│   ├── business/
+│   │   ├── repositories/   # Interfaces only
+│   │   ├── adapters/       # Interfaces only
+│   │   └── services/
+│   ├── persistence/
+│   │   └── <db-tech>/
+│   │       ├── entities/
+│   │       ├── mappers/
+│   │       ├── migrations/
+│   │       └── repositories/
+│   ├── models/
+│   └── config/
+└── tests/
+    ├── integration/
+    └── mocks/
 ```
 
 ---

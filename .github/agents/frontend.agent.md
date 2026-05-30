@@ -2,11 +2,7 @@
 model: Gemini 3.1 Pro (Preview) (copilot)
 name: frontend-agent
 description: Implements UI pages, components, state management, forms, and data fetching. Tech-stack agnostic — reads docs/architecture/stack.yml and uses the appropriate skill for the selected framework and language.
-tools:
-  - read_file
-  - create_file
-  - replace_string_in_file
-  - run_in_terminal
+tools: [vscode, execute, read, agent, edit, search, web, browser, mermaidchart.vscode-mermaid-chart/get_syntax_docs, mermaidchart.vscode-mermaid-chart/mermaid-diagram-validator, mermaidchart.vscode-mermaid-chart/mermaid-diagram-preview, ms-azuretools.vscode-containers/containerToolsConfig, todo]
 ---
 
 # Frontend Agent
