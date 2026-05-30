@@ -1,0 +1,41 @@
+status: draft  # Change to 'confirmed' after architect-agent and user approve
+
+project:
+  type:           # fullstack | backend-only | frontend-only | mobile-only
+  packageManager: # pnpm | npm | yarn | maven | gradle | pip | poetry | go
+  monorepo:       # true | false
+
+# ── Fill in after running architect-agent ─────────────────────────────────────
+
+frontend:         # remove this section if no frontend app
+  framework:      # reactjs | nextjs | vuejs | angular | svelte | nuxt
+  language:       # typescript | javascript
+  styling:        # tailwind | css-modules | styled-components
+  ui:             # shadcn | radix | mui | ant-design | none
+
+backend:          # remove this section if no backend app
+  framework:      # nestjs | express | fastify | quarkus | spring-boot | fastapi | django | gin
+  language:       # typescript | javascript | java | kotlin | python | go
+
+# messagebroker:  # uncomment if needed
+#   provider:     # rabbitmq | kafka | sqs
+
+# mobile:         # uncomment if a mobile app is needed
+#   framework:    # react-native | expo | flutter | ionic
+#   language:     # typescript | dart
+#   version:      #
+
+database:
+  provider:       # postgresql | mysql | mongodb | sqlite
+  orm:            # prisma | typeorm | hibernate | panache | sqlalchemy | gorm | none
+
+auth:
+  provider:       # clerk | auth0 | supabase | custom-jwt | none
+
+testing:
+  unit:           # vitest | jest | junit | pytest | go-test
+  e2e:            # playwright | cypress | none
+
+deployment:
+  container:      # docker | podman | none
+  ci:             # github-actions | gitlab-ci | none
